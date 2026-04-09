@@ -572,7 +572,7 @@ async function startFetch() {
   showStatus('데이터를 가져오는 중...', 'info', true);
   showProgress(0, '초기화 중...');
 
-  const BASE = 'https://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
+  const BASE = 'http://27.96.156.163/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
   let pageNo = 1;
   let totalCount = null;
   let fetched = 0;
