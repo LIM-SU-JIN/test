@@ -444,11 +444,11 @@
         <div class="form-group">
           <label>CORS 프록시</label>
           <select id="corsProxy">
-            <option value="https://corsproxy.io/?url=">corsproxy.io (권장)</option>
-            <option value="https://api.allorigins.win/raw?url=">allorigins.win</option>
-            <option value="">없음 (직접 호출)</option>
+            <option value="">없음 — 로컬 file:// + Allow CORS 확장 사용 시</option>
+            <option value="https://corsproxy.io/?url=">corsproxy.io 프록시</option>
+            <option value="https://api.allorigins.win/raw?url=">allorigins.win 프록시</option>
           </select>
-          <span class="hint">브라우저 직접 호출 시 CORS 오류 방지용</span>
+          <span class="hint">HTTP IP 서버: 로컬 환경 + Allow CORS 확장이 가장 안정적</span>
         </div>
       </div>
 
@@ -511,11 +511,17 @@
 
   <!-- CORS Info -->
   <div class="cors-info">
-    <strong>⚠ CORS 안내</strong><br>
-    공공데이터포털 API는 브라우저에서 직접 호출 시 CORS 오류가 발생할 수 있습니다.
-    위의 <strong>CORS 프록시</strong> 옵션을 사용하거나, 로컬 서버(Python <code>http.server</code> 등)로
-    실행 시에는 브라우저 확장 프로그램(Allow CORS)을 설치해 해결할 수 있습니다.
-    또는 서버 측에서 API 키를 관리하고 백엔드를 통해 호출하는 것을 권장합니다.
+    <strong>⚠ 브라우저 호출 제약 안내</strong><br>
+    이 API는 <strong>HTTP(비보안) + IP 주소</strong> 기반(<code>http://27.96.156.163/...</code>)으로,
+    브라우저에서 직접 호출 시 두 가지 제약이 있습니다.<br><br>
+    <strong>① Mixed Content 차단</strong> — HTTPS 페이지에서 HTTP API를 호출하면 브라우저가 자동 차단합니다.
+    파일을 로컬(<code>file://</code>)로 열거나, HTTP로 서빙되는 환경에서 사용하세요.<br>
+    <strong>② CORS 오류</strong> — API 서버에 CORS 헤더가 없으면 차단됩니다.
+    아래 해결 방법 중 하나를 사용하세요.<br><br>
+    ✅ <strong>권장 방법</strong>: 파일을 <code>로컬(file://)</code>로 열고 브라우저에
+    <a href="https://chrome.google.com/webstore/detail/allow-cors/lhobafahddgcelffkeicbaginigeejlf" target="_blank" style="color:inherit;">Allow CORS 확장</a>을 설치하거나,
+    Python으로 로컬 서버 실행: <code>python -m http.server 8080</code> →
+    <code>http://localhost:8080</code> 에서 접속.
   </div>
 
 </div>
