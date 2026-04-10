@@ -11,21 +11,21 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:       #f4f6f9;
-  --white:    #ffffff;
-  --border:   #dde2ea;
-  --text:     #1a1f2e;
-  --muted:    #6b7588;
-  --primary:  #1e6fff;
-  --primary-h:#1458d4;
-  --green:    #1a7a4a;
-  --green-bg: #e8f5ee;
-  --red:      #c0392b;
-  --red-bg:   #fdf0ef;
-  --orange:   #d97706;
-  --orange-bg:#fef3e2;
-  --row-alt:  #f8fafc;
-  --shadow:   0 2px 8px rgba(0,0,0,.08);
+  --bg:        #f4f6f9;
+  --white:     #ffffff;
+  --border:    #dde2ea;
+  --text:      #1a1f2e;
+  --muted:     #6b7588;
+  --primary:   #1e6fff;
+  --primary-h: #1458d4;
+  --green:     #1a7a4a;
+  --green-bg:  #e8f5ee;
+  --red:       #c0392b;
+  --red-bg:    #fdf0ef;
+  --orange:    #d97706;
+  --orange-bg: #fef3e2;
+  --row-alt:   #f8fafc;
+  --shadow:    0 2px 8px rgba(0,0,0,.08);
 }
 
 body {
@@ -35,7 +35,7 @@ body {
   min-height: 100vh;
 }
 
-/* ─ Header ─ */
+/* ── Header ── */
 .header {
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -46,19 +46,38 @@ body {
   box-shadow: var(--shadow);
 }
 .header-icon {
-  width: 36px; height: 36px;
+  width: 38px; height: 38px;
   background: var(--primary);
-  border-radius: 8px;
+  border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
 }
-.header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
-.header p  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.header h1  { font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+.header p   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.server-badge {
+  margin-left: auto;
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid #b2dfc5;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
 
-/* ─ Layout ─ */
-.wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: flex; flex-direction: column; gap: 18px; }
+/* ── Layout ── */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-/* ─ Card ─ */
+/* ── Card ── */
 .card {
   background: var(--white);
   border: 1px solid var(--border);
@@ -67,8 +86,8 @@ body {
   box-shadow: var(--shadow);
 }
 .card-title {
-  padding: 14px 20px;
-  font-size: 13px;
+  padding: 13px 20px;
+  font-size: 12px;
   font-weight: 700;
   border-bottom: 1px solid var(--border);
   background: #fafbfc;
@@ -77,30 +96,28 @@ body {
   gap: 8px;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: .07em;
 }
-.card-title .bullet {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--primary);
-}
+.card-title .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
 .card-body { padding: 20px; }
 
-/* ─ Form ─ */
-.form-row {
+/* ── Form ── */
+.form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
   align-items: end;
 }
 .field { display: flex; flex-direction: column; gap: 5px; }
+.field.full { grid-column: 1 / -1; }
 .field label {
   font-size: 12px;
   font-weight: 600;
   color: var(--muted);
-  letter-spacing: 0.03em;
+  letter-spacing: .03em;
 }
-.field input, .field select {
+.field input,
+.field select {
   height: 40px;
   padding: 0 12px;
   border: 1.5px solid var(--border);
@@ -111,19 +128,21 @@ body {
   background: var(--white);
   outline: none;
   transition: border-color .15s;
+  width: 100%;
 }
-.field input:focus, .field select:focus { border-color: var(--primary); }
+.field input:focus,
+.field select:focus { border-color: var(--primary); }
 .hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-.date-pair {
+.date-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 8px;
 }
-.date-pair .sep { color: var(--muted); font-size: 14px; text-align: center; }
+.date-row .sep { text-align: center; color: var(--muted); font-weight: 700; }
 
-/* ─ Buttons ─ */
+/* ── Buttons ── */
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .btn {
   height: 42px;
@@ -134,14 +153,14 @@ body {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 7px;
   transition: background .15s, transform .1s, opacity .15s;
+  white-space: nowrap;
 }
 .btn:active { transform: scale(.97); }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
-
 .btn-blue   { background: var(--primary); color: #fff; }
 .btn-blue:hover:not(:disabled)  { background: var(--primary-h); }
 .btn-green  { background: var(--green); color: #fff; }
@@ -149,7 +168,7 @@ body {
 .btn-ghost  { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
 .btn-ghost:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
 
-/* ─ Alert boxes ─ */
+/* ── Alerts ── */
 .alert {
   padding: 12px 16px;
   border-radius: 8px;
@@ -157,16 +176,16 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
-.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-.alert-info   { background: #eef4ff; color: #1e4fad; border: 1px solid #c3d8ff; }
-.alert-ok     { background: var(--green-bg); color: var(--green); border: 1px solid #b2dfc5; }
-.alert-err    { background: var(--red-bg); color: var(--red); border: 1px solid #f2b8b3; }
-.alert-warn   { background: var(--orange-bg); color: var(--orange); border: 1px solid #f9d8a0; }
+.alert .a-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-info  { background: #eef4ff; color: #1e4fad; border: 1px solid #c3d8ff; }
+.alert-ok    { background: var(--green-bg); color: var(--green); border: 1px solid #b2dfc5; }
+.alert-err   { background: var(--red-bg);   color: var(--red);   border: 1px solid #f2b8b3; }
+.alert-warn  { background: var(--orange-bg);color: var(--orange);border: 1px solid #f9d8a0; }
 
-/* ─ Progress ─ */
-.prog-bar-wrap {
+/* ── Progress ── */
+.prog-wrap {
   background: var(--bg);
   border-radius: 99px;
   height: 8px;
@@ -180,9 +199,14 @@ body {
   transition: width .35s ease;
   width: 0%;
 }
-.prog-label { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+.prog-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
 
-/* ─ Stats ─ */
+/* ── Stats ── */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -196,13 +220,13 @@ body {
   padding: 14px 16px;
 }
 .stat-n { font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'JetBrains Mono', monospace; line-height: 1; }
-.stat-l { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.stat-l { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
 
-/* ─ Table ─ */
-.tbl-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: auto; }
+/* ── Table ── */
+.tbl-outer { border: 1px solid var(--border); border-radius: 10px; overflow: auto; max-height: 520px; }
 table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 thead th {
-  background: #f0f4ff;
+  background: #eef3ff;
   padding: 10px 14px;
   text-align: left;
   font-family: 'JetBrains Mono', monospace;
@@ -210,9 +234,9 @@ thead th {
   font-weight: 600;
   color: var(--primary);
   white-space: nowrap;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 2px solid #c8d8f8;
   border-right: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 1;
+  position: sticky; top: 0; z-index: 2;
 }
 thead th:last-child { border-right: none; }
 tbody tr { border-bottom: 1px solid var(--border); }
@@ -224,14 +248,14 @@ td {
   white-space: nowrap;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11.5px;
-  border-right: 1px solid #eef0f4;
+  border-right: 1px solid #edf0f5;
   max-width: 280px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 td:last-child { border-right: none; }
 
-/* ─ Pagination ─ */
+/* ── Pagination ── */
 .pg {
   display: flex;
   align-items: center;
@@ -252,22 +276,17 @@ td:last-child { border-right: none; }
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   transition: border-color .12s, background .12s, color .12s;
 }
 .pg-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
-.pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.pg-btn.active  { background: var(--primary); color: #fff; border-color: var(--primary); }
 .pg-btn:disabled { opacity: .35; cursor: not-allowed; }
 
-/* ─ Empty ─ */
-.empty { text-align: center; padding: 56px 20px; color: var(--muted); }
-.empty .e-icon { font-size: 44px; margin-bottom: 12px; }
-.empty p { font-size: 13px; }
-
-/* ─ Spinner ─ */
+/* ── Spinner ── */
 .spin {
   display: inline-block;
-  width: 15px; height: 15px;
+  width: 14px; height: 14px;
   border: 2.5px solid transparent;
   border-top-color: currentColor;
   border-radius: 50%;
@@ -275,184 +294,129 @@ td:last-child { border-right: none; }
 }
 @keyframes rot { to { transform: rotate(360deg); } }
 
-/* ─ Notice ─ */
-.notice {
-  background: var(--orange-bg);
-  border: 1px solid #f9d8a0;
-  border-radius: 10px;
-  padding: 14px 18px;
-  font-size: 13px;
-  color: #7c4a00;
-  line-height: 1.7;
-}
-.notice strong { color: var(--orange); }
-.notice code {
-  background: rgba(0,0,0,.07);
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-}
-
 @media(max-width:600px) {
   .wrap { padding: 14px 12px; }
-  .form-row { grid-template-columns: 1fr; }
-  .header h1 { font-size: 15px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .server-badge { display: none; }
 }
 </style>
 </head>
 <body>
 
+<!-- ─ Header ─────────────────────────────────────────────────────────── -->
 <div class="header">
   <div class="header-icon">📦</div>
   <div>
     <h1>납품요청정보 다운로더</h1>
-    <p>ShoppingMallPrdctInfoService · getDlvrReqInfoList</p>
+    <p>getDlvrReqInfoList · 조회 후 엑셀 다운로드</p>
   </div>
+  <span class="server-badge">🟢 Node.js 프록시 서버 연결됨</span>
 </div>
 
 <div class="wrap">
 
-  <!-- 설정 카드 -->
+  <!-- ─ 설정 카드 ──────────────────────────────────────────────────────── -->
   <div class="card">
-    <div class="card-title"><span class="bullet"></span>조회 설정</div>
-    <div class="card-body" style="display:flex;flex-direction:column;gap:20px;">
+    <div class="card-title"><span class="dot"></span>조회 설정</div>
+    <div class="card-body">
+      <div class="form-grid">
 
-      <div class="form-row">
-        <!-- Service Key -->
-        <div class="field" style="grid-column:1/-1;">
-          <label>Service Key (원문 키)</label>
-          <input type="text" id="serviceKey"
+        <div class="field full">
+          <label>Service Key (원문 인증키)</label>
+          <input id="serviceKey" type="text"
             value="g8x9VLUgmus3x4uoRBKXryTVEJfsNBiFqgVdQhQrikm1KpNFcB21v+6vAsXN9BLqdERRHYkPQ5oyoqiOk8hgww==">
         </div>
 
-        <!-- 날짜 -->
-        <div class="field" style="grid-column:1/-1;">
-          <label>조회 기간 <span style="background:#e8eeff;color:var(--primary);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:6px;">5일 간격 고정</span></label>
-          <div class="date-pair">
-            <input type="date" id="dateStart">
+        <div class="field full">
+          <label>
+            조회 기간
+            <span style="margin-left:8px;background:#e8eeff;color:var(--primary);
+              border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;">
+              5일 간격
+            </span>
+          </label>
+          <div class="date-row">
+            <input id="dateStart" type="date">
             <span class="sep">~</span>
-            <input type="date" id="dateEnd">
+            <input id="dateEnd"   type="date">
           </div>
           <p class="hint">오늘 기준으로 자동 설정됩니다. 직접 변경할 수 있습니다.</p>
         </div>
 
-        <!-- 수요기관명 -->
         <div class="field">
           <label>dminsttNm (수요기관명)</label>
-          <input type="text" id="dminsttNm" value="한국국토정보공사">
-          <p class="hint">비우면 전체 기관 조회</p>
+          <input id="dminsttNm" type="text" value="한국국토정보공사">
+          <p class="hint">비워두면 전체 기관 조회</p>
         </div>
 
-        <!-- 조회구분 -->
         <div class="field">
           <label>inqryDiv (조회구분)</label>
           <select id="inqryDiv">
-            <option value="1" selected>1 - 납품요청일자 기준</option>
-            <option value="2">2 - 납품기한일자 기준</option>
+            <option value="1" selected>1 — 납품요청일자 기준</option>
+            <option value="2">2 — 납품기한일자 기준</option>
           </select>
         </div>
 
-        <!-- 건수 -->
         <div class="field">
-          <label>numOfRows (한번에 가져올 건수)</label>
-          <input type="number" id="numOfRows" value="100" min="1" max="1000">
-          <p class="hint">페이지당 최대 조회 건수</p>
+          <label>numOfRows (페이지당 건수)</label>
+          <input id="numOfRows" type="number" value="100" min="1" max="1000">
+          <p class="hint">한 번에 가져올 최대 건수</p>
         </div>
 
-        <!-- CORS 프록시 -->
-        <div class="field">
-          <label>CORS 프록시</label>
-          <select id="proxyMode">
-            <option value="">없음 (로컬 환경 + Allow CORS 확장)</option>
-            <option value="corsproxy">corsproxy.io</option>
-            <option value="allorigins">allorigins.win</option>
-          </select>
-          <p class="hint">HTTP 서버 직접 호출 시 CORS 오류 방지</p>
-        </div>
       </div>
-
     </div>
   </div>
 
-  <!-- 실행 버튼 -->
+  <!-- ─ 실행 버튼 ──────────────────────────────────────────────────────── -->
   <div style="display:flex;flex-direction:column;gap:12px;">
     <div class="btn-row">
-      <button class="btn btn-blue" id="fetchBtn" onclick="runFetch()">
-        🔍 데이터 조회
-      </button>
-      <button class="btn btn-green" id="xlsxBtn" onclick="downloadExcel()" disabled>
-        📥 엑셀 다운로드
-      </button>
-      <button class="btn btn-ghost" onclick="resetAll()">초기화</button>
+      <button class="btn btn-blue"  id="fetchBtn"  onclick="runFetch()">🔍 데이터 조회</button>
+      <button class="btn btn-green" id="xlsxBtn"   onclick="downloadExcel()" disabled>📥 엑셀 다운로드</button>
+      <button class="btn btn-ghost"                onclick="resetAll()">↺ 초기화</button>
     </div>
-    <div id="msgBox" style="display:none;"></div>
+    <div id="msgBox"  style="display:none;"></div>
     <div id="progBox" style="display:none;">
-      <div class="prog-bar-wrap"><div class="prog-bar" id="progBar"></div></div>
-      <p class="prog-label" id="progLbl"></p>
+      <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+      <p class="prog-lbl" id="progLbl"></p>
     </div>
   </div>
 
-  <!-- 결과 카드 -->
+  <!-- ─ 결과 카드 ──────────────────────────────────────────────────────── -->
   <div class="card" id="resultCard" style="display:none;">
-    <div class="card-title"><span class="bullet" style="background:var(--green)"></span>조회 결과</div>
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>조회 결과</div>
     <div class="card-body">
       <div class="stats" id="statsArea"></div>
-      <div class="tbl-wrap" id="tblWrap"></div>
+      <div class="tbl-outer" id="tblOuter"></div>
       <div class="pg" id="pgArea"></div>
     </div>
-  </div>
-
-  <!-- 안내 -->
-  <div class="notice">
-    <strong>⚠ HTTP + IP 서버 호출 안내</strong><br>
-    이 API는 <code>http://27.96.156.163/...</code> (HTTP, 비보안 IP)로 제공됩니다. 브라우저에서 직접 호출할 때
-    두 가지 제약이 있습니다.<br>
-    <strong>① Mixed Content 차단</strong> — HTTPS 페이지에서 HTTP 호출은 자동 차단됩니다.
-    이 파일을 <code>file://</code> 로컬에서 열거나 <code>http://localhost</code>에서 실행하세요.<br>
-    <strong>② CORS 오류</strong> — Chrome 확장
-    <a href="https://chrome.google.com/webstore/detail/allow-cors/lhobafahddgcelffkeicbaginigeejlf"
-       target="_blank" style="color:var(--orange);font-weight:600;">Allow CORS: Access-Control-Allow-Origin</a>을
-    설치 후 활성화하거나, 아래 명령어로 로컬 서버를 띄우세요:<br>
-    <code>python -m http.server 8080</code> → <code>http://localhost:8080</code>에서 접속
   </div>
 
 </div><!-- /wrap -->
 
 <script>
-// ── 상태 ──────────────────────────────────────────────────────────────────────
-const BASE_URL = 'http://27.96.156.163/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
+// ── 상수 ──────────────────────────────────────────────────────────────────────
+// 브라우저 → /proxy/... → 서버(Node.js) → http://27.96.156.163/...
+const API_PATH = '/proxy/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
+
+// ── 전역 상태 ─────────────────────────────────────────────────────────────────
 let allRows = [];
-let cols = [];
+let cols    = [];
 let curPage = 1;
 const PER_PAGE = 50;
 
-// ── 초기화 ────────────────────────────────────────────────────────────────────
-(function init() {
+// ── 초기 날짜 설정 (오늘 기준 5일 간격) ──────────────────────────────────────
+(function initDates() {
   const today = new Date();
   document.getElementById('dateEnd').value   = toISO(today);
   document.getElementById('dateStart').value = toISO(addDays(today, -4));
 })();
 
-function toISO(d) {
-  return d.toISOString().slice(0, 10);
-}
-function addDays(d, n) {
-  const r = new Date(d); r.setDate(r.getDate() + n); return r;
-}
-function toYMD(isoStr) {
-  return isoStr.replace(/-/g, '');
-}
+function toISO(d)    { return d.toISOString().slice(0, 10); }
+function addDays(d, n){ const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function toYMD(s)    { return s.replace(/-/g, ''); }
+function sleep(ms)   { return new Promise(r => setTimeout(r, ms)); }
 
-// ── 프록시 URL 빌더 ──────────────────────────────────────────────────────────
-function buildUrl(params, proxyMode) {
-  const apiUrl = BASE_URL + '?' + params.toString();
-  if (proxyMode === 'corsproxy')  return `https://corsproxy.io/?url=${encodeURIComponent(apiUrl)}`;
-  if (proxyMode === 'allorigins') return `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-  return apiUrl;
-}
-
-// ── 메인 조회 ─────────────────────────────────────────────────────────────────
+// ── 데이터 조회 ───────────────────────────────────────────────────────────────
 async function runFetch() {
   const serviceKey = document.getElementById('serviceKey').value.trim();
   const dateStart  = toYMD(document.getElementById('dateStart').value);
@@ -460,15 +424,16 @@ async function runFetch() {
   const dminsttNm  = document.getElementById('dminsttNm').value.trim();
   const inqryDiv   = document.getElementById('inqryDiv').value;
   const numOfRows  = parseInt(document.getElementById('numOfRows').value) || 100;
-  const proxyMode  = document.getElementById('proxyMode').value;
 
-  if (!serviceKey) return showMsg('error', '❌ Service Key를 입력해주세요.');
-  if (!dateStart || !dateEnd) return showMsg('error', '❌ 조회 기간을 입력해주세요.');
+  if (!serviceKey)       return showMsg('err', '❌ Service Key를 입력해주세요.');
+  if (!dateStart || !dateEnd) return showMsg('err', '❌ 조회 기간을 입력해주세요.');
 
   allRows = []; cols = [];
   setBusy(true);
-  showMsg('info', '<span class="spin"></span>&nbsp; 데이터를 가져오는 중입니다...', false);
-  setProgress(0, '준비 중...');
+  showMsg('info', '<span class="spin"></span>&nbsp; 데이터를 가져오는 중입니다...');
+  setProgress(0, '연결 중...');
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('xlsxBtn').disabled = true;
 
   let pageNo = 1, totalCount = null, fetched = 0;
 
@@ -476,20 +441,22 @@ async function runFetch() {
     while (true) {
       const params = new URLSearchParams({
         serviceKey,
-        pageNo: String(pageNo),
-        numOfRows: String(numOfRows),
-        type: 'json',
+        pageNo:      String(pageNo),
+        numOfRows:   String(numOfRows),
+        type:        'json',
         inqryDiv,
         inqryBgnDate: dateStart,
         inqryEndDate: dateEnd,
       });
       if (dminsttNm) params.set('dminsttNm', dminsttNm);
 
-      const url = buildUrl(params, proxyMode);
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+      const res = await fetch(`${API_PATH}?${params}`);
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error(`서버 응답 오류 (HTTP ${res.status})${txt ? ': ' + txt.slice(0,120) : ''}`);
+      }
 
-      const json = await resp.json();
+      const json = await res.json();
       const body = json?.response?.body ?? json?.body ?? json;
 
       if (totalCount === null) {
@@ -499,45 +466,47 @@ async function runFetch() {
       const items = pickItems(body);
       if (!items.length) break;
 
-      // 컬럼 수집
-      items.forEach(row => Object.keys(row).forEach(k => { if (!cols.includes(k)) cols.push(k); }));
+      // 컬럼 수집 (처음 등장 순서 유지)
+      items.forEach(row =>
+        Object.keys(row).forEach(k => { if (!cols.includes(k)) cols.push(k); })
+      );
       allRows.push(...items);
       fetched += items.length;
 
-      const pct = totalCount > 0 ? Math.min(99, Math.round(fetched / totalCount * 100)) : 60;
-      setProgress(pct, `페이지 ${pageNo} · ${fetched.toLocaleString()} / ${totalCount.toLocaleString()} 건 수집 중`);
+      const pct = totalCount > 0
+        ? Math.min(99, Math.round(fetched / totalCount * 100))
+        : 60;
+      setProgress(pct,
+        `페이지 ${pageNo} 완료 · ${fetched.toLocaleString()} / ${totalCount.toLocaleString() || '?'} 건`
+      );
 
       if (items.length < numOfRows || (totalCount > 0 && fetched >= totalCount)) break;
       pageNo++;
-      await sleep(120);
+      await sleep(100);
     }
 
     hideProgress();
 
     if (!allRows.length) {
-      showMsg('warn', '⚠ 조회된 데이터가 없습니다. 조회 기간 또는 기관명을 확인해주세요.');
-      document.getElementById('resultCard').style.display = 'none';
+      showMsg('warn', '⚠ 조회된 데이터가 없습니다. 날짜 범위 또는 기관명을 확인해주세요.');
     } else {
-      showMsg('ok', `✅ 총 <strong>${allRows.length.toLocaleString()}건</strong> 조회 완료`);
+      showMsg('ok', `✅ 총 <strong>${allRows.length.toLocaleString()}건</strong> 조회 완료 · 엑셀 다운로드 버튼을 클릭하세요.`);
       renderResult();
       document.getElementById('xlsxBtn').disabled = false;
     }
-  } catch(e) {
+  } catch (e) {
     hideProgress();
-    showMsg('error',
-      `❌ 오류: ${e.message}<br>
-      <small>CORS 프록시를 변경하거나, 로컬 환경에서 Allow CORS 확장을 활성화 후 재시도해주세요.</small>`
-    );
+    showMsg('err', `❌ 오류: ${e.message}`);
   } finally {
     setBusy(false);
   }
 }
 
+// response body 에서 items 추출
 function pickItems(body) {
   const raw = body?.items?.item ?? body?.items ?? body?.item ?? body?.data ?? body?.list ?? [];
   return Array.isArray(raw) ? raw : (raw ? [raw] : []);
 }
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ── 결과 렌더링 ───────────────────────────────────────────────────────────────
 function renderResult() {
@@ -545,16 +514,26 @@ function renderResult() {
   document.getElementById('resultCard').style.display = '';
 
   document.getElementById('statsArea').innerHTML = `
-    <div class="stat"><div class="stat-n">${allRows.length.toLocaleString()}</div><div class="stat-l">총 건수</div></div>
-    <div class="stat"><div class="stat-n">${cols.length}</div><div class="stat-l">컬럼 수</div></div>
-    <div class="stat"><div class="stat-n">${Math.ceil(allRows.length / PER_PAGE)}</div><div class="stat-l">보기 페이지</div></div>
+    <div class="stat">
+      <div class="stat-n">${allRows.length.toLocaleString()}</div>
+      <div class="stat-l">총 건수</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">${cols.length}</div>
+      <div class="stat-l">컬럼 수</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">${Math.ceil(allRows.length / PER_PAGE)}</div>
+      <div class="stat-l">페이지 수</div>
+    </div>
   `;
+
   renderTable();
 }
 
 function renderTable() {
-  const start = (curPage - 1) * PER_PAGE;
-  const slice = allRows.slice(start, start + PER_PAGE);
+  const start      = (curPage - 1) * PER_PAGE;
+  const slice      = allRows.slice(start, start + PER_PAGE);
   const totalPages = Math.ceil(allRows.length / PER_PAGE);
 
   const thead = cols.map(c => `<th title="${c}">${c}</th>`).join('');
@@ -565,37 +544,36 @@ function renderTable() {
     }).join('') + '</tr>'
   ).join('');
 
-  document.getElementById('tblWrap').innerHTML =
+  document.getElementById('tblOuter').innerHTML =
     `<table><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>`;
 
   // 페이지네이션
   const pg = document.getElementById('pgArea');
   if (totalPages <= 1) { pg.innerHTML = ''; return; }
 
-  let nums = [];
-  if (totalPages <= 9) {
-    nums = Array.from({length: totalPages}, (_, i) => i + 1);
-  } else {
-    const lo = Math.max(1, curPage - 4);
-    const hi = Math.min(totalPages, lo + 8);
-    nums = Array.from({length: hi - lo + 1}, (_, i) => lo + i);
-  }
+  const lo   = Math.max(1, curPage - 4);
+  const hi   = Math.min(totalPages, lo + 8);
+  const nums = Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
 
   pg.innerHTML = `
-    <span class="pg-info">${start+1}–${Math.min(start+PER_PAGE, allRows.length)} / ${allRows.length.toLocaleString()} 건</span>
+    <span class="pg-info">
+      ${start+1}–${Math.min(start + PER_PAGE, allRows.length)} / ${allRows.length.toLocaleString()} 건
+    </span>
     <div class="pg-btns">
-      <button class="pg-btn" onclick="goPage(1)" ${curPage===1?'disabled':''}>«</button>
-      <button class="pg-btn" onclick="goPage(${curPage-1})" ${curPage===1?'disabled':''}>‹</button>
-      ${nums.map(n=>`<button class="pg-btn${n===curPage?' active':''}" onclick="goPage(${n})">${n}</button>`).join('')}
-      <button class="pg-btn" onclick="goPage(${curPage+1})" ${curPage===totalPages?'disabled':''}>›</button>
-      <button class="pg-btn" onclick="goPage(${totalPages})" ${curPage===totalPages?'disabled':''}>»</button>
+      <button class="pg-btn" onclick="goPage(1)"          ${curPage===1?'disabled':''}>«</button>
+      <button class="pg-btn" onclick="goPage(${curPage-1})"${curPage===1?'disabled':''}>‹</button>
+      ${nums.map(n =>
+        `<button class="pg-btn${n===curPage?' active':''}" onclick="goPage(${n})">${n}</button>`
+      ).join('')}
+      <button class="pg-btn" onclick="goPage(${curPage+1})"${curPage===totalPages?'disabled':''}>›</button>
+      <button class="pg-btn" onclick="goPage(${totalPages})"${curPage===totalPages?'disabled':''}>»</button>
     </div>`;
 }
 
 function goPage(n) {
   curPage = n;
   renderTable();
-  document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
+  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ── 엑셀 다운로드 ─────────────────────────────────────────────────────────────
@@ -604,38 +582,45 @@ function downloadExcel() {
 
   const ws = XLSX.utils.json_to_sheet(allRows, { header: cols });
 
-  // 헤더 스타일
+  // 헤더 스타일 (파란색 배경 + 흰 글씨)
   cols.forEach((_, ci) => {
-    const addr = XLSX.utils.encode_cell({r:0, c:ci});
-    if (ws[addr]) ws[addr].s = { font: { bold:true, color:{rgb:'FFFFFF'} }, fill: { fgColor:{rgb:'1E6FFF'} } };
+    const addr = XLSX.utils.encode_cell({ r: 0, c: ci });
+    if (ws[addr]) {
+      ws[addr].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '1E6FFF' } },
+        alignment: { horizontal: 'center' },
+      };
+    }
   });
 
-  // 컬럼 너비 자동
+  // 컬럼 너비 자동 계산
   ws['!cols'] = cols.map(k => ({
-    wch: Math.min(42, Math.max(k.length + 2, ...allRows.slice(0,100).map(r => String(r[k]??'').length)) + 2)
+    wch: Math.min(45,
+      Math.max(k.length + 2,
+        ...allRows.slice(0, 200).map(r => String(r[k] ?? '').length)
+      ) + 2
+    )
   }));
-
-  // 행 높이
-  ws['!rows'] = [{hpt: 20}]; // 헤더
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '납품요청정보');
 
-  // 메타 시트
-  const metaWs = XLSX.utils.aoa_to_sheet([
+  // 조회정보 시트
+  const meta = XLSX.utils.aoa_to_sheet([
     ['항목', '값'],
-    ['조회기간', `${document.getElementById('dateStart').value} ~ ${document.getElementById('dateEnd').value}`],
+    ['API 주소',   'http://27.96.156.163/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList'],
+    ['조회기간',   `${document.getElementById('dateStart').value} ~ ${document.getElementById('dateEnd').value}`],
     ['수요기관명', document.getElementById('dminsttNm').value || '(전체)'],
-    ['조회구분', document.getElementById('inqryDiv').options[document.getElementById('inqryDiv').selectedIndex].text],
-    ['총 건수', allRows.length],
+    ['조회구분',   document.getElementById('inqryDiv').options[document.getElementById('inqryDiv').selectedIndex].text],
+    ['총 건수',    allRows.length],
     ['다운로드 일시', new Date().toLocaleString('ko-KR')],
-    ['API 주소', BASE_URL],
   ]);
-  metaWs['!cols'] = [{wch:16},{wch:55}];
-  XLSX.utils.book_append_sheet(wb, metaWs, '조회정보');
+  meta['!cols'] = [{ wch: 16 }, { wch: 60 }];
+  XLSX.utils.book_append_sheet(wb, meta, '조회정보');
 
-  const ds = document.getElementById('dateStart').value.replace(/-/g,'');
-  const de = document.getElementById('dateEnd').value.replace(/-/g,'');
+  const ds = document.getElementById('dateStart').value.replace(/-/g, '');
+  const de = document.getElementById('dateEnd').value.replace(/-/g, '');
   XLSX.writeFile(wb, `납품요청정보_${ds}_${de}.xlsx`);
 }
 
@@ -644,30 +629,40 @@ function resetAll() {
   allRows = []; cols = [];
   document.getElementById('resultCard').style.display = 'none';
   document.getElementById('xlsxBtn').disabled = true;
-  document.getElementById('msgBox').style.display = 'none';
-  hideProgress();
+  document.getElementById('msgBox').style.display  = 'none';
+  document.getElementById('progBox').style.display = 'none';
 }
 
-// ── UI 헬퍼 ──────────────────────────────────────────────────────────────────
-function showMsg(type, html, autohide = false) {
-  const icons = { ok:'✅', error:'❌', warn:'⚠️', info:'ℹ️' };
-  const cls   = { ok:'alert-ok', error:'alert-err', warn:'alert-warn', info:'alert-info' };
+// ── UI 헬퍼 ───────────────────────────────────────────────────────────────────
+function showMsg(type, html) {
+  const map = {
+    ok:   ['alert-ok',   '✅'],
+    err:  ['alert-err',  '❌'],
+    warn: ['alert-warn', '⚠️'],
+    info: ['alert-info', 'ℹ️'],
+  };
+  const [cls, icon] = map[type] ?? map.info;
   const el = document.getElementById('msgBox');
   el.style.display = '';
-  el.innerHTML = `<div class="alert ${cls[type]}"><span class="alert-icon">${icons[type]}</span><span>${html}</span></div>`;
+  el.innerHTML = `<div class="alert ${cls}"><span class="a-icon">${icon}</span><span>${html}</span></div>`;
 }
 
 function setProgress(pct, label) {
   document.getElementById('progBox').style.display = '';
-  document.getElementById('progBar').style.width = pct + '%';
-  document.getElementById('progLbl').textContent = label;
+  document.getElementById('progBar').style.width   = pct + '%';
+  document.getElementById('progLbl').textContent   = label;
 }
-function hideProgress() { document.getElementById('progBox').style.display = 'none'; }
+
+function hideProgress() {
+  document.getElementById('progBox').style.display = 'none';
+}
 
 function setBusy(on) {
   const btn = document.getElementById('fetchBtn');
   btn.disabled = on;
-  btn.innerHTML = on ? '<span class="spin"></span> 조회 중...' : '🔍 데이터 조회';
+  btn.innerHTML = on
+    ? '<span class="spin"></span>&nbsp; 조회 중...'
+    : '🔍 데이터 조회';
 }
 </script>
 </body>
