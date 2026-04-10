@@ -3,585 +3,474 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>납품요청정보 데이터 다운로더</title>
+<title>납품요청정보 다운로더</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2128;
-    --border: #30363d;
-    --accent: #00d4aa;
-    --accent2: #58a6ff;
-    --danger: #f85149;
-    --warn: #e3b341;
-    --text: #e6edf3;
-    --muted: #7d8590;
-    --success: #3fb950;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #f4f6f9;
+  --white:    #ffffff;
+  --border:   #dde2ea;
+  --text:     #1a1f2e;
+  --muted:    #6b7588;
+  --primary:  #1e6fff;
+  --primary-h:#1458d4;
+  --green:    #1a7a4a;
+  --green-bg: #e8f5ee;
+  --red:      #c0392b;
+  --red-bg:   #fdf0ef;
+  --orange:   #d97706;
+  --orange-bg:#fef3e2;
+  --row-alt:  #f8fafc;
+  --shadow:   0 2px 8px rgba(0,0,0,.08);
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
-    min-height: 100vh;
-  }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+}
 
-  /* ── Header ── */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 18px 32px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--surface);
-  }
-  .header-badge {
-    background: var(--accent);
-    color: #0d1117;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 3px;
-    letter-spacing: 0.05em;
-  }
-  header h1 {
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  header .subtitle {
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-  }
+/* ─ Header ─ */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+.header-icon {
+  width: 36px; height: 36px;
+  background: var(--primary);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+.header p  { font-size: 12px; color: var(--muted); margin-top: 1px; }
 
-  /* ── Layout ── */
-  .main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 28px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+/* ─ Layout ─ */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: flex; flex-direction: column; gap: 18px; }
 
-  /* ── Card ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .card-header {
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface2);
-  }
-  .card-header .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-  }
-  .card-header h2 {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-  }
-  .card-body { padding: 20px; }
+/* ─ Card ─ */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  padding: 14px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  background: #fafbfc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.card-title .bullet {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.card-body { padding: 20px; }
 
-  /* ── Form Grid ── */
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-  }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.full { grid-column: 1 / -1; }
-  label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-  input, select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    padding: 9px 12px;
-    outline: none;
-    transition: border-color 0.15s;
-    width: 100%;
-  }
-  input:focus, select:focus { border-color: var(--accent); }
-  select option { background: var(--surface); }
+/* ─ Form ─ */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+.field input, .field select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus { border-color: var(--primary); }
+.hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-  .hint {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+.date-pair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.date-pair .sep { color: var(--muted); font-size: 14px; text-align: center; }
 
-  /* ── Date Row ── */
-  .date-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .date-row input { flex: 1; }
-  .date-sep {
-    color: var(--muted);
-    font-size: 13px;
-    font-family: 'IBM Plex Mono', monospace;
-    flex-shrink: 0;
-  }
-  .interval-tag {
-    background: color-mix(in srgb, var(--accent) 15%, transparent);
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: 4px;
-    font-size: 10px;
-    font-family: 'IBM Plex Mono', monospace;
-    padding: 3px 8px;
-    white-space: nowrap;
-  }
+/* ─ Buttons ─ */
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  height: 42px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background .15s, transform .1s, opacity .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
 
-  /* ── Actions ── */
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-primary { background: var(--accent); color: #0d1117; }
-  .btn-primary:hover:not(:disabled) { opacity: 0.88; }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover:not(:disabled) { border-color: var(--accent2); color: var(--accent2); }
-  .btn-excel { background: #1d6f42; color: #fff; }
-  .btn-excel:hover:not(:disabled) { background: #1a6039; }
+.btn-blue   { background: var(--primary); color: #fff; }
+.btn-blue:hover:not(:disabled)  { background: var(--primary-h); }
+.btn-green  { background: var(--green); color: #fff; }
+.btn-green:hover:not(:disabled) { background: #155e3a; }
+.btn-ghost  { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
 
-  /* ── Status Bar ── */
-  .status-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-  .status-bar.info { background: color-mix(in srgb, var(--accent2) 12%, transparent); color: var(--accent2); border: 1px solid color-mix(in srgb, var(--accent2) 25%, transparent); }
-  .status-bar.success { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success); border: 1px solid color-mix(in srgb, var(--success) 25%, transparent); }
-  .status-bar.error { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent); }
-  .status-bar.warn { background: color-mix(in srgb, var(--warn) 12%, transparent); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 25%, transparent); }
+/* ─ Alert boxes ─ */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.6;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-info   { background: #eef4ff; color: #1e4fad; border: 1px solid #c3d8ff; }
+.alert-ok     { background: var(--green-bg); color: var(--green); border: 1px solid #b2dfc5; }
+.alert-err    { background: var(--red-bg); color: var(--red); border: 1px solid #f2b8b3; }
+.alert-warn   { background: var(--orange-bg); color: var(--orange); border: 1px solid #f9d8a0; }
 
-  /* ── Progress ── */
-  .progress-wrap {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    height: 6px;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-    width: 0%;
-  }
-  .progress-label {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    margin-top: 4px;
-  }
+/* ─ Progress ─ */
+.prog-bar-wrap {
+  background: var(--bg);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.prog-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #56b4ff);
+  border-radius: 99px;
+  transition: width .35s ease;
+  width: 0%;
+}
+.prog-label { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
 
-  /* ── Stats ── */
-  .stats-row {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .stat-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 16px;
-    min-width: 120px;
-    flex: 1;
-  }
-  .stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    font-family: 'IBM Plex Mono', monospace;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-top: 4px;
-    font-family: 'IBM Plex Mono', monospace;
-  }
+/* ─ Stats ─ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.stat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat-n { font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'JetBrains Mono', monospace; line-height: 1; }
+.stat-l { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 
-  /* ── Table ── */
-  .table-wrap {
-    overflow-x: auto;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  thead tr {
-    background: var(--surface2);
-    border-bottom: 2px solid var(--border);
-  }
-  th {
-    padding: 10px 14px;
-    text-align: left;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    white-space: nowrap;
-    border-right: 1px solid var(--border);
-  }
-  th:last-child { border-right: none; }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  td {
-    padding: 9px 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--text);
-    white-space: nowrap;
-    border-right: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
-    max-width: 260px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  td:last-child { border-right: none; }
+/* ─ Table ─ */
+.tbl-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+thead th {
+  background: #f0f4ff;
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 1;
+}
+thead th:last-child { border-right: none; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:nth-child(even) { background: var(--row-alt); }
+tbody tr:hover { background: #eef4ff; }
+tbody tr:last-child { border-bottom: none; }
+td {
+  padding: 9px 14px;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  border-right: 1px solid #eef0f4;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+td:last-child { border-right: none; }
 
-  /* ── Pagination ── */
-  .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .page-info {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-  }
-  .page-btns { display: flex; gap: 6px; }
-  .page-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    padding: 5px 11px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .page-btn:hover { border-color: var(--accent2); color: var(--accent2); }
-  .page-btn.active { background: var(--accent); color: #0d1117; border-color: var(--accent); }
-  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+/* ─ Pagination ─ */
+.pg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.pg-info { font-size: 12px; color: var(--muted); }
+.pg-btns { display: flex; gap: 4px; }
+.pg-btn {
+  min-width: 34px; height: 34px;
+  padding: 0 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  background: var(--white);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .12s, background .12s, color .12s;
+}
+.pg-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+.pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.pg-btn:disabled { opacity: .35; cursor: not-allowed; }
 
-  /* ── Empty ── */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 13px; }
+/* ─ Empty ─ */
+.empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+.empty .e-icon { font-size: 44px; margin-bottom: 12px; }
+.empty p { font-size: 13px; }
 
-  /* ── Spinner ── */
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ─ Spinner ─ */
+.spin {
+  display: inline-block;
+  width: 15px; height: 15px;
+  border: 2.5px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: rot .7s linear infinite;
+}
+@keyframes rot { to { transform: rotate(360deg); } }
 
-  /* ── CORS note ── */
-  .cors-info {
-    background: color-mix(in srgb, var(--warn) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 12px;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--warn) 90%, var(--text));
-  }
-  .cors-info strong { color: var(--warn); }
+/* ─ Notice ─ */
+.notice {
+  background: var(--orange-bg);
+  border: 1px solid #f9d8a0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #7c4a00;
+  line-height: 1.7;
+}
+.notice strong { color: var(--orange); }
+.notice code {
+  background: rgba(0,0,0,.07);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
 
-  /* ── JSON raw ── */
-  .raw-toggle {
-    font-size: 11px;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace;
-    background: none;
-    border: none;
-    text-decoration: underline;
-    padding: 0;
-  }
-  .raw-toggle:hover { color: var(--accent2); }
-  pre {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    overflow-x: auto;
-    color: var(--muted);
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 10px;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    .main { padding: 16px 12px; }
-    .form-grid { grid-template-columns: 1fr; }
-    header { flex-wrap: wrap; }
-    header .subtitle { width: 100%; margin-left: 0; }
-    .stats-row { gap: 8px; }
-  }
+@media(max-width:600px) {
+  .wrap { padding: 14px 12px; }
+  .form-row { grid-template-columns: 1fr; }
+  .header h1 { font-size: 15px; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <span class="header-badge">DATA</span>
-  <h1>납품요청정보 조회 &amp; 다운로더</h1>
-  <span class="subtitle">ShoppingMallPrdctInfoService · getDlvrReqInfoList</span>
-</header>
-
-<div class="main">
-
-  <!-- API Config -->
-  <div class="card">
-    <div class="card-header">
-      <span class="dot" style="background:var(--accent)"></span>
-      <h2>API 설정</h2>
-    </div>
-    <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
-      <div class="form-grid">
-        <div class="form-group full">
-          <label>Service Key</label>
-          <input type="text" id="serviceKey"
-            value="g8x9VLUgmus3x4uoRBKXryTVEJfsNBiFqgVdQhQrikm1KpNFcB21v+6vAsXN9BLqdERRHYkPQ5oyoqiOk8hgww==">
-          <span class="hint">공공데이터포털 발급 인증키 (Encoding 되지 않은 원문 키 사용)</span>
-        </div>
-
-        <div class="form-group">
-          <label>inqryDiv (조회구분)</label>
-          <select id="inqryDiv">
-            <option value="1" selected>1 - 납품요청일자</option>
-            <option value="2">2 - 납품기한일자</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>dminsttNm (수요기관명)</label>
-          <input type="text" id="dminsttNm" value="한국국토정보공사">
-          <span class="hint">비워두면 전체 조회</span>
-        </div>
-
-        <div class="form-group">
-          <label>numOfRows (페이지당 건수)</label>
-          <input type="number" id="numOfRows" value="100" min="1" max="1000">
-        </div>
-
-        <div class="form-group">
-          <label>CORS 프록시</label>
-          <select id="corsProxy">
-            <option value="">없음 — 로컬 file:// + Allow CORS 확장 사용 시</option>
-            <option value="https://corsproxy.io/?url=">corsproxy.io 프록시</option>
-            <option value="https://api.allorigins.win/raw?url=">allorigins.win 프록시</option>
-          </select>
-          <span class="hint">HTTP IP 서버: 로컬 환경 + Allow CORS 확장이 가장 안정적</span>
-        </div>
-      </div>
-
-      <!-- Date Range -->
-      <div>
-        <label style="display:block;margin-bottom:8px;">조회 기간 <span class="interval-tag">5일 간격</span></label>
-        <div class="date-row">
-          <input type="date" id="startDate">
-          <span class="date-sep">~</span>
-          <input type="date" id="endDate">
-          <button class="btn btn-secondary" onclick="resetDates()" style="flex-shrink:0;padding:9px 14px;">오늘 기준</button>
-        </div>
-        <p class="hint" style="margin-top:6px;">조회기준시작일자 → 조회기준종료일자 (5일 간격으로 자동 설정)</p>
-      </div>
-    </div>
+<div class="header">
+  <div class="header-icon">📦</div>
+  <div>
+    <h1>납품요청정보 다운로더</h1>
+    <p>ShoppingMallPrdctInfoService · getDlvrReqInfoList</p>
   </div>
-
-  <!-- Controls -->
-  <div style="display:flex; flex-direction:column; gap:12px;">
-    <div class="actions">
-      <button class="btn btn-primary" id="fetchBtn" onclick="startFetch()">
-        <span>▶</span> 데이터 조회
-      </button>
-      <button class="btn btn-excel" id="excelBtn" onclick="downloadExcel()" disabled>
-        <span>↓</span> 엑셀 다운로드
-      </button>
-      <button class="btn btn-secondary" onclick="clearResults()">
-        <span>✕</span> 초기화
-      </button>
-    </div>
-    <div id="statusArea" style="display:none;"></div>
-    <div id="progressArea" style="display:none;">
-      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
-      <p class="progress-label" id="progressLabel"></p>
-    </div>
-  </div>
-
-  <!-- Results -->
-  <div class="card" id="resultsCard" style="display:none;">
-    <div class="card-header">
-      <span class="dot" style="background:var(--success)"></span>
-      <h2>조회 결과</h2>
-      <button class="raw-toggle" id="rawToggle" onclick="toggleRaw()" style="margin-left:auto;">JSON 원문 보기</button>
-    </div>
-    <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
-
-      <!-- Stats -->
-      <div class="stats-row" id="statsRow"></div>
-
-      <!-- Raw JSON -->
-      <pre id="rawJson" style="display:none;"></pre>
-
-      <!-- Table -->
-      <div id="tableContainer"></div>
-
-      <!-- Pagination -->
-      <div class="pagination" id="paginationArea"></div>
-    </div>
-  </div>
-
-  <!-- CORS Info -->
-  <div class="cors-info">
-    <strong>⚠ 브라우저 호출 제약 안내</strong><br>
-    이 API는 <strong>HTTP(비보안) + IP 주소</strong> 기반(<code>http://27.96.156.163/...</code>)으로,
-    브라우저에서 직접 호출 시 두 가지 제약이 있습니다.<br><br>
-    <strong>① Mixed Content 차단</strong> — HTTPS 페이지에서 HTTP API를 호출하면 브라우저가 자동 차단합니다.
-    파일을 로컬(<code>file://</code>)로 열거나, HTTP로 서빙되는 환경에서 사용하세요.<br>
-    <strong>② CORS 오류</strong> — API 서버에 CORS 헤더가 없으면 차단됩니다.
-    아래 해결 방법 중 하나를 사용하세요.<br><br>
-    ✅ <strong>권장 방법</strong>: 파일을 <code>로컬(file://)</code>로 열고 브라우저에
-    <a href="https://chrome.google.com/webstore/detail/allow-cors/lhobafahddgcelffkeicbaginigeejlf" target="_blank" style="color:inherit;">Allow CORS 확장</a>을 설치하거나,
-    Python으로 로컬 서버 실행: <code>python -m http.server 8080</code> →
-    <code>http://localhost:8080</code> 에서 접속.
-  </div>
-
 </div>
 
+<div class="wrap">
+
+  <!-- 설정 카드 -->
+  <div class="card">
+    <div class="card-title"><span class="bullet"></span>조회 설정</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:20px;">
+
+      <div class="form-row">
+        <!-- Service Key -->
+        <div class="field" style="grid-column:1/-1;">
+          <label>Service Key (원문 키)</label>
+          <input type="text" id="serviceKey"
+            value="g8x9VLUgmus3x4uoRBKXryTVEJfsNBiFqgVdQhQrikm1KpNFcB21v+6vAsXN9BLqdERRHYkPQ5oyoqiOk8hgww==">
+        </div>
+
+        <!-- 날짜 -->
+        <div class="field" style="grid-column:1/-1;">
+          <label>조회 기간 <span style="background:#e8eeff;color:var(--primary);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:6px;">5일 간격 고정</span></label>
+          <div class="date-pair">
+            <input type="date" id="dateStart">
+            <span class="sep">~</span>
+            <input type="date" id="dateEnd">
+          </div>
+          <p class="hint">오늘 기준으로 자동 설정됩니다. 직접 변경할 수 있습니다.</p>
+        </div>
+
+        <!-- 수요기관명 -->
+        <div class="field">
+          <label>dminsttNm (수요기관명)</label>
+          <input type="text" id="dminsttNm" value="한국국토정보공사">
+          <p class="hint">비우면 전체 기관 조회</p>
+        </div>
+
+        <!-- 조회구분 -->
+        <div class="field">
+          <label>inqryDiv (조회구분)</label>
+          <select id="inqryDiv">
+            <option value="1" selected>1 - 납품요청일자 기준</option>
+            <option value="2">2 - 납품기한일자 기준</option>
+          </select>
+        </div>
+
+        <!-- 건수 -->
+        <div class="field">
+          <label>numOfRows (한번에 가져올 건수)</label>
+          <input type="number" id="numOfRows" value="100" min="1" max="1000">
+          <p class="hint">페이지당 최대 조회 건수</p>
+        </div>
+
+        <!-- CORS 프록시 -->
+        <div class="field">
+          <label>CORS 프록시</label>
+          <select id="proxyMode">
+            <option value="">없음 (로컬 환경 + Allow CORS 확장)</option>
+            <option value="corsproxy">corsproxy.io</option>
+            <option value="allorigins">allorigins.win</option>
+          </select>
+          <p class="hint">HTTP 서버 직접 호출 시 CORS 오류 방지</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 실행 버튼 -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="btn-row">
+      <button class="btn btn-blue" id="fetchBtn" onclick="runFetch()">
+        🔍 데이터 조회
+      </button>
+      <button class="btn btn-green" id="xlsxBtn" onclick="downloadExcel()" disabled>
+        📥 엑셀 다운로드
+      </button>
+      <button class="btn btn-ghost" onclick="resetAll()">초기화</button>
+    </div>
+    <div id="msgBox" style="display:none;"></div>
+    <div id="progBox" style="display:none;">
+      <div class="prog-bar-wrap"><div class="prog-bar" id="progBar"></div></div>
+      <p class="prog-label" id="progLbl"></p>
+    </div>
+  </div>
+
+  <!-- 결과 카드 -->
+  <div class="card" id="resultCard" style="display:none;">
+    <div class="card-title"><span class="bullet" style="background:var(--green)"></span>조회 결과</div>
+    <div class="card-body">
+      <div class="stats" id="statsArea"></div>
+      <div class="tbl-wrap" id="tblWrap"></div>
+      <div class="pg" id="pgArea"></div>
+    </div>
+  </div>
+
+  <!-- 안내 -->
+  <div class="notice">
+    <strong>⚠ HTTP + IP 서버 호출 안내</strong><br>
+    이 API는 <code>http://27.96.156.163/...</code> (HTTP, 비보안 IP)로 제공됩니다. 브라우저에서 직접 호출할 때
+    두 가지 제약이 있습니다.<br>
+    <strong>① Mixed Content 차단</strong> — HTTPS 페이지에서 HTTP 호출은 자동 차단됩니다.
+    이 파일을 <code>file://</code> 로컬에서 열거나 <code>http://localhost</code>에서 실행하세요.<br>
+    <strong>② CORS 오류</strong> — Chrome 확장
+    <a href="https://chrome.google.com/webstore/detail/allow-cors/lhobafahddgcelffkeicbaginigeejlf"
+       target="_blank" style="color:var(--orange);font-weight:600;">Allow CORS: Access-Control-Allow-Origin</a>을
+    설치 후 활성화하거나, 아래 명령어로 로컬 서버를 띄우세요:<br>
+    <code>python -m http.server 8080</code> → <code>http://localhost:8080</code>에서 접속
+  </div>
+
+</div><!-- /wrap -->
+
 <script>
-// ── State ──────────────────────────────────────────────────────────────────
-let allData = [];
-let columns = [];
-let currentPage = 1;
-const PAGE_SIZE = 50;
+// ── 상태 ──────────────────────────────────────────────────────────────────────
+const BASE_URL = 'http://27.96.156.163/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
+let allRows = [];
+let cols = [];
+let curPage = 1;
+const PER_PAGE = 50;
 
-// ── Init ───────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', resetDates);
-
-function resetDates() {
+// ── 초기화 ────────────────────────────────────────────────────────────────────
+(function init() {
   const today = new Date();
-  const end = fmtDate(today);
-  const start = fmtDate(new Date(today.getTime() - 4 * 86400000));
-  document.getElementById('startDate').value = toInputDate(start);
-  document.getElementById('endDate').value = toInputDate(end);
+  document.getElementById('dateEnd').value   = toISO(today);
+  document.getElementById('dateStart').value = toISO(addDays(today, -4));
+})();
+
+function toISO(d) {
+  return d.toISOString().slice(0, 10);
+}
+function addDays(d, n) {
+  const r = new Date(d); r.setDate(r.getDate() + n); return r;
+}
+function toYMD(isoStr) {
+  return isoStr.replace(/-/g, '');
 }
 
-function fmtDate(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  return `${y}${m}${dd}`;
+// ── 프록시 URL 빌더 ──────────────────────────────────────────────────────────
+function buildUrl(params, proxyMode) {
+  const apiUrl = BASE_URL + '?' + params.toString();
+  if (proxyMode === 'corsproxy')  return `https://corsproxy.io/?url=${encodeURIComponent(apiUrl)}`;
+  if (proxyMode === 'allorigins') return `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+  return apiUrl;
 }
 
-function toInputDate(s) {
-  return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`;
-}
+// ── 메인 조회 ─────────────────────────────────────────────────────────────────
+async function runFetch() {
+  const serviceKey = document.getElementById('serviceKey').value.trim();
+  const dateStart  = toYMD(document.getElementById('dateStart').value);
+  const dateEnd    = toYMD(document.getElementById('dateEnd').value);
+  const dminsttNm  = document.getElementById('dminsttNm').value.trim();
+  const inqryDiv   = document.getElementById('inqryDiv').value;
+  const numOfRows  = parseInt(document.getElementById('numOfRows').value) || 100;
+  const proxyMode  = document.getElementById('proxyMode').value;
 
-function fromInputDate(s) {
-  return s.replace(/-/g,'');
-}
+  if (!serviceKey) return showMsg('error', '❌ Service Key를 입력해주세요.');
+  if (!dateStart || !dateEnd) return showMsg('error', '❌ 조회 기간을 입력해주세요.');
 
-// ── Fetch ──────────────────────────────────────────────────────────────────
-async function startFetch() {
-  const serviceKey  = document.getElementById('serviceKey').value.trim();
-  const inqryDiv    = document.getElementById('inqryDiv').value;
-  const dminsttNm   = document.getElementById('dminsttNm').value.trim();
-  const numOfRows   = parseInt(document.getElementById('numOfRows').value) || 100;
-  const corsProxy   = document.getElementById('corsProxy').value;
-  const startDate   = fromInputDate(document.getElementById('startDate').value);
-  const endDate     = fromInputDate(document.getElementById('endDate').value);
+  allRows = []; cols = [];
+  setBusy(true);
+  showMsg('info', '<span class="spin"></span>&nbsp; 데이터를 가져오는 중입니다...', false);
+  setProgress(0, '준비 중...');
 
-  if (!serviceKey)  return showStatus('서비스키를 입력해주세요.', 'error');
-  if (!startDate || !endDate) return showStatus('조회 기간을 입력해주세요.', 'error');
-
-  allData = [];
-  columns = [];
-  setFetchBusy(true);
-  showStatus('데이터를 가져오는 중...', 'info', true);
-  showProgress(0, '초기화 중...');
-
-  const BASE = 'http://27.96.156.163/1230000/at/ShoppingMallPrdctInfoService/getDlvrReqInfoList';
-  let pageNo = 1;
-  let totalCount = null;
-  let fetched = 0;
+  let pageNo = 1, totalCount = null, fetched = 0;
 
   try {
     while (true) {
@@ -591,213 +480,194 @@ async function startFetch() {
         numOfRows: String(numOfRows),
         type: 'json',
         inqryDiv,
-        inqryBgnDate: startDate,
-        inqryEndDate: endDate,
+        inqryBgnDate: dateStart,
+        inqryEndDate: dateEnd,
       });
       if (dminsttNm) params.set('dminsttNm', dminsttNm);
 
-      const url = corsProxy
-        ? `${corsProxy}${encodeURIComponent(BASE + '?' + params.toString())}`
-        : `${BASE}?${params.toString()}`;
-
+      const url = buildUrl(params, proxyMode);
       const resp = await fetch(url);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
 
       const json = await resp.json();
-
-      // Navigate response structure
       const body = json?.response?.body ?? json?.body ?? json;
+
       if (totalCount === null) {
-        totalCount = parseInt(body?.totalCount ?? body?.total_count ?? 0);
+        totalCount = parseInt(body?.totalCount ?? body?.total_count ?? 0) || 0;
       }
-      const items = extractItems(body);
 
-      if (!items || items.length === 0) break;
+      const items = pickItems(body);
+      if (!items.length) break;
 
+      // 컬럼 수집
+      items.forEach(row => Object.keys(row).forEach(k => { if (!cols.includes(k)) cols.push(k); }));
+      allRows.push(...items);
       fetched += items.length;
-      allData.push(...items);
 
-      // Collect columns
-      items.forEach(row => {
-        Object.keys(row).forEach(k => { if (!columns.includes(k)) columns.push(k); });
-      });
+      const pct = totalCount > 0 ? Math.min(99, Math.round(fetched / totalCount * 100)) : 60;
+      setProgress(pct, `페이지 ${pageNo} · ${fetched.toLocaleString()} / ${totalCount.toLocaleString()} 건 수집 중`);
 
-      const pct = totalCount > 0 ? Math.min(100, Math.round((fetched / totalCount) * 100)) : 50;
-      showProgress(pct, `페이지 ${pageNo} 완료 · ${fetched.toLocaleString()} / ${(totalCount||'?').toLocaleString()} 건`);
-
-      if (items.length < numOfRows || fetched >= totalCount) break;
+      if (items.length < numOfRows || (totalCount > 0 && fetched >= totalCount)) break;
       pageNo++;
-      await new Promise(r => setTimeout(r, 150)); // rate-limit courtesy delay
+      await sleep(120);
     }
 
     hideProgress();
-    if (allData.length === 0) {
-      showStatus('조회 결과가 없습니다.', 'warn');
-      document.getElementById('resultsCard').style.display = 'none';
+
+    if (!allRows.length) {
+      showMsg('warn', '⚠ 조회된 데이터가 없습니다. 조회 기간 또는 기관명을 확인해주세요.');
+      document.getElementById('resultCard').style.display = 'none';
     } else {
-      showStatus(`총 ${allData.length.toLocaleString()}건 조회 완료`, 'success');
-      renderResults();
+      showMsg('ok', `✅ 총 <strong>${allRows.length.toLocaleString()}건</strong> 조회 완료`);
+      renderResult();
+      document.getElementById('xlsxBtn').disabled = false;
     }
   } catch(e) {
     hideProgress();
-    showStatus(`오류: ${e.message} — CORS 프록시를 변경하거나 네트워크를 확인해주세요.`, 'error');
+    showMsg('error',
+      `❌ 오류: ${e.message}<br>
+      <small>CORS 프록시를 변경하거나, 로컬 환경에서 Allow CORS 확장을 활성화 후 재시도해주세요.</small>`
+    );
   } finally {
-    setFetchBusy(false);
+    setBusy(false);
   }
 }
 
-function extractItems(body) {
-  if (!body) return [];
-  // Try various possible structures
-  const items = body?.items?.item ?? body?.items ?? body?.item ?? body?.data ?? body?.list ?? [];
-  return Array.isArray(items) ? items : (items ? [items] : []);
+function pickItems(body) {
+  const raw = body?.items?.item ?? body?.items ?? body?.item ?? body?.data ?? body?.list ?? [];
+  return Array.isArray(raw) ? raw : (raw ? [raw] : []);
 }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── Render ─────────────────────────────────────────────────────────────────
-function renderResults() {
-  currentPage = 1;
-  document.getElementById('resultsCard').style.display = '';
-  document.getElementById('rawJson').textContent = JSON.stringify(allData.slice(0,3), null, 2) + (allData.length > 3 ? '\n// ...' : '');
-  renderStats();
-  renderTable();
-  document.getElementById('excelBtn').disabled = false;
-}
+// ── 결과 렌더링 ───────────────────────────────────────────────────────────────
+function renderResult() {
+  curPage = 1;
+  document.getElementById('resultCard').style.display = '';
 
-function renderStats() {
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat-box"><div class="stat-value">${allData.length.toLocaleString()}</div><div class="stat-label">Total Records</div></div>
-    <div class="stat-box"><div class="stat-value">${columns.length}</div><div class="stat-label">Columns</div></div>
-    <div class="stat-box"><div class="stat-value">${Math.ceil(allData.length / PAGE_SIZE)}</div><div class="stat-label">Pages (view)</div></div>
+  document.getElementById('statsArea').innerHTML = `
+    <div class="stat"><div class="stat-n">${allRows.length.toLocaleString()}</div><div class="stat-l">총 건수</div></div>
+    <div class="stat"><div class="stat-n">${cols.length}</div><div class="stat-l">컬럼 수</div></div>
+    <div class="stat"><div class="stat-n">${Math.ceil(allRows.length / PER_PAGE)}</div><div class="stat-l">보기 페이지</div></div>
   `;
+  renderTable();
 }
 
 function renderTable() {
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const slice = allData.slice(start, start + PAGE_SIZE);
-  const totalPages = Math.ceil(allData.length / PAGE_SIZE);
+  const start = (curPage - 1) * PER_PAGE;
+  const slice = allRows.slice(start, start + PER_PAGE);
+  const totalPages = Math.ceil(allRows.length / PER_PAGE);
 
-  // Table
-  let thead = '<tr>' + columns.map(c => `<th title="${c}">${c}</th>`).join('') + '</tr>';
-  let tbody = slice.map(row =>
-    '<tr>' + columns.map(c => `<td title="${row[c] ?? ''}">${row[c] ?? ''}</td>`).join('') + '</tr>'
+  const thead = cols.map(c => `<th title="${c}">${c}</th>`).join('');
+  const tbody = slice.map(row =>
+    '<tr>' + cols.map(c => {
+      const v = row[c] ?? '';
+      return `<td title="${v}">${v}</td>`;
+    }).join('') + '</tr>'
   ).join('');
 
-  document.getElementById('tableContainer').innerHTML = `
-    <div class="table-wrap"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+  document.getElementById('tblWrap').innerHTML =
+    `<table><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>`;
 
-  // Pagination
-  const pa = document.getElementById('paginationArea');
-  if (totalPages <= 1) { pa.innerHTML = ''; return; }
+  // 페이지네이션
+  const pg = document.getElementById('pgArea');
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
 
-  const MAX_BTNS = 7;
-  let btnRange = [];
-  if (totalPages <= MAX_BTNS) {
-    btnRange = Array.from({length: totalPages}, (_,i) => i+1);
+  let nums = [];
+  if (totalPages <= 9) {
+    nums = Array.from({length: totalPages}, (_, i) => i + 1);
   } else {
-    const half = Math.floor(MAX_BTNS/2);
-    let lo = Math.max(1, currentPage - half);
-    let hi = Math.min(totalPages, lo + MAX_BTNS - 1);
-    if (hi - lo < MAX_BTNS - 1) lo = Math.max(1, hi - MAX_BTNS + 1);
-    btnRange = Array.from({length: hi - lo + 1}, (_,i) => lo + i);
+    const lo = Math.max(1, curPage - 4);
+    const hi = Math.min(totalPages, lo + 8);
+    nums = Array.from({length: hi - lo + 1}, (_, i) => lo + i);
   }
 
-  const btnHTML = btnRange.map(p =>
-    `<button class="page-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`
-  ).join('');
-
-  pa.innerHTML = `
-    <span class="page-info">${start+1}–${Math.min(start+PAGE_SIZE, allData.length)} / ${allData.length.toLocaleString()}건</span>
-    <div class="page-btns">
-      <button class="page-btn" onclick="goPage(1)" ${currentPage===1?'disabled':''}>«</button>
-      <button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>
-      ${btnHTML}
-      <button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>
-      <button class="page-btn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>»</button>
+  pg.innerHTML = `
+    <span class="pg-info">${start+1}–${Math.min(start+PER_PAGE, allRows.length)} / ${allRows.length.toLocaleString()} 건</span>
+    <div class="pg-btns">
+      <button class="pg-btn" onclick="goPage(1)" ${curPage===1?'disabled':''}>«</button>
+      <button class="pg-btn" onclick="goPage(${curPage-1})" ${curPage===1?'disabled':''}>‹</button>
+      ${nums.map(n=>`<button class="pg-btn${n===curPage?' active':''}" onclick="goPage(${n})">${n}</button>`).join('')}
+      <button class="pg-btn" onclick="goPage(${curPage+1})" ${curPage===totalPages?'disabled':''}>›</button>
+      <button class="pg-btn" onclick="goPage(${totalPages})" ${curPage===totalPages?'disabled':''}>»</button>
     </div>`;
 }
 
-function goPage(p) {
-  currentPage = p;
+function goPage(n) {
+  curPage = n;
   renderTable();
-  document.getElementById('resultsCard').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
 }
 
-function clearResults() {
-  allData = []; columns = [];
-  document.getElementById('resultsCard').style.display = 'none';
-  document.getElementById('excelBtn').disabled = true;
-  document.getElementById('statusArea').style.display = 'none';
-  hideProgress();
-}
-
-function toggleRaw() {
-  const el = document.getElementById('rawJson');
-  const btn = document.getElementById('rawToggle');
-  const show = el.style.display === 'none';
-  el.style.display = show ? '' : 'none';
-  btn.textContent = show ? 'JSON 원문 숨기기' : 'JSON 원문 보기';
-}
-
-// ── Excel ──────────────────────────────────────────────────────────────────
+// ── 엑셀 다운로드 ─────────────────────────────────────────────────────────────
 function downloadExcel() {
-  if (!allData.length) return;
-  const ws = XLSX.utils.json_to_sheet(allData, { header: columns });
+  if (!allRows.length) return;
 
-  // Style header row
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let C = range.s.c; C <= range.e.c; C++) {
-    const addr = XLSX.utils.encode_cell({r:0, c:C});
-    if (!ws[addr]) continue;
-    ws[addr].s = { font: { bold: true }, fill: { fgColor: { rgb: '1D6F42' } } };
-  }
+  const ws = XLSX.utils.json_to_sheet(allRows, { header: cols });
 
-  // Auto column widths
-  const colWidths = columns.map(key => {
-    const max = Math.max(key.length, ...allData.slice(0,200).map(r => String(r[key]??'').length));
-    return { wch: Math.min(max + 2, 40) };
+  // 헤더 스타일
+  cols.forEach((_, ci) => {
+    const addr = XLSX.utils.encode_cell({r:0, c:ci});
+    if (ws[addr]) ws[addr].s = { font: { bold:true, color:{rgb:'FFFFFF'} }, fill: { fgColor:{rgb:'1E6FFF'} } };
   });
-  ws['!cols'] = colWidths;
+
+  // 컬럼 너비 자동
+  ws['!cols'] = cols.map(k => ({
+    wch: Math.min(42, Math.max(k.length + 2, ...allRows.slice(0,100).map(r => String(r[k]??'').length)) + 2)
+  }));
+
+  // 행 높이
+  ws['!rows'] = [{hpt: 20}]; // 헤더
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '납품요청정보');
 
-  // Meta sheet
-  const meta = [
-    { 항목: '조회기간', 값: `${document.getElementById('startDate').value} ~ ${document.getElementById('endDate').value}` },
-    { 항목: '수요기관명', 값: document.getElementById('dminsttNm').value || '(전체)' },
-    { 항목: '총 건수', 값: allData.length },
-    { 항목: '다운로드 시각', 값: new Date().toLocaleString('ko-KR') },
-  ];
-  const ws2 = XLSX.utils.json_to_sheet(meta);
-  XLSX.utils.book_append_sheet(wb, ws2, '메타정보');
+  // 메타 시트
+  const metaWs = XLSX.utils.aoa_to_sheet([
+    ['항목', '값'],
+    ['조회기간', `${document.getElementById('dateStart').value} ~ ${document.getElementById('dateEnd').value}`],
+    ['수요기관명', document.getElementById('dminsttNm').value || '(전체)'],
+    ['조회구분', document.getElementById('inqryDiv').options[document.getElementById('inqryDiv').selectedIndex].text],
+    ['총 건수', allRows.length],
+    ['다운로드 일시', new Date().toLocaleString('ko-KR')],
+    ['API 주소', BASE_URL],
+  ]);
+  metaWs['!cols'] = [{wch:16},{wch:55}];
+  XLSX.utils.book_append_sheet(wb, metaWs, '조회정보');
 
-  const fname = `납품요청정보_${document.getElementById('startDate').value}_${document.getElementById('endDate').value}.xlsx`;
-  XLSX.writeFile(wb, fname);
+  const ds = document.getElementById('dateStart').value.replace(/-/g,'');
+  const de = document.getElementById('dateEnd').value.replace(/-/g,'');
+  XLSX.writeFile(wb, `납품요청정보_${ds}_${de}.xlsx`);
 }
 
-// ── UI Helpers ─────────────────────────────────────────────────────────────
-function showStatus(msg, type='info', spinner=false) {
-  const el = document.getElementById('statusArea');
+// ── 초기화 ────────────────────────────────────────────────────────────────────
+function resetAll() {
+  allRows = []; cols = [];
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('xlsxBtn').disabled = true;
+  document.getElementById('msgBox').style.display = 'none';
+  hideProgress();
+}
+
+// ── UI 헬퍼 ──────────────────────────────────────────────────────────────────
+function showMsg(type, html, autohide = false) {
+  const icons = { ok:'✅', error:'❌', warn:'⚠️', info:'ℹ️' };
+  const cls   = { ok:'alert-ok', error:'alert-err', warn:'alert-warn', info:'alert-info' };
+  const el = document.getElementById('msgBox');
   el.style.display = '';
-  el.innerHTML = `<div class="status-bar ${type}">${spinner?'<span class="spinner"></span>':''}${msg}</div>`;
+  el.innerHTML = `<div class="alert ${cls[type]}"><span class="alert-icon">${icons[type]}</span><span>${html}</span></div>`;
 }
 
-function showProgress(pct, label) {
-  document.getElementById('progressArea').style.display = '';
-  document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = label;
+function setProgress(pct, label) {
+  document.getElementById('progBox').style.display = '';
+  document.getElementById('progBar').style.width = pct + '%';
+  document.getElementById('progLbl').textContent = label;
 }
+function hideProgress() { document.getElementById('progBox').style.display = 'none'; }
 
-function hideProgress() {
-  document.getElementById('progressArea').style.display = 'none';
-}
-
-function setFetchBusy(busy) {
+function setBusy(on) {
   const btn = document.getElementById('fetchBtn');
-  btn.disabled = busy;
-  btn.innerHTML = busy
-    ? '<span class="spinner"></span> 조회 중...'
-    : '<span>▶</span> 데이터 조회';
+  btn.disabled = on;
+  btn.innerHTML = on ? '<span class="spin"></span> 조회 중...' : '🔍 데이터 조회';
 }
 </script>
 </body>
